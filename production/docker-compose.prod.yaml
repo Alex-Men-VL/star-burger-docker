@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  web:
+    command: gunicorn star_burger.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - ./backend/:/usr/src/app/
+      - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/media
+    expose:
+      - 8000
+    env_file:
+      - production/.env.prod
+  nginx:
+    build: ./production/nginx
+    ports:
+      - "80:80"
+    volumes:
+      - static_volume:/usr/src/app/staticfiles
+    restart: always
+    depends_on:
+      - web
+  db:
+    env_file:
+      - production/.env.prod
+
+volumes:
+  static_volume:
+  postgres_data:
+  media_volume:
+  nginx_conf:

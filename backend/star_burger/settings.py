@@ -129,14 +129,10 @@ STATICFILES_DIRS = [
 
 YANDEX_API_KEY = env.str('YANDEX_API_KEY', '')
 
-local_repo = Repo(path=BASE_DIR)
-local_branch = local_repo.active_branch.name
-
 ROLLBAR = {
     'access_token': env.str('ROLLBAR_TOKEN', ''),
     'environment': env.str('ROLLBAR_ENVIRONMENT', 'development'),
     'root': BASE_DIR,
-    'branch': local_branch,
 }
 
 rollbar.init(**ROLLBAR)

@@ -19,6 +19,7 @@ services:
       - "80:80"
     volumes:
       - static_volume:/usr/src/app/staticfiles
+      - media_volume:/usr/src/app/media
     restart: always
     depends_on:
       - web

@@ -4,14 +4,13 @@ services:
   web:
     build: backend
     container_name: star-burger-django
-    depends_on:
-      - db
+  frontend:
+    build: frontend
+    container_name: star-burger-frontend
   db:
     image: postgres
     container_name: star-burger-postgres
     restart: always
-    volumes:
-      - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_DB=${POSTGRES_DB-star_burger}
       - POSTGRES_USER=${POSTGRES_USER-postgres}

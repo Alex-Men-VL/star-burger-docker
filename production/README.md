@@ -5,6 +5,11 @@
 $ docker --version
 ```
 
+Скачайте код:
+```sh
+$ git clone https://github.com/Alex-Men-VL/star-burger-docker.git
+```
+
 Перейдите в каталог `production`:
 
 ```shell

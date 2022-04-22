@@ -21,7 +21,7 @@
 
 Скачайте код:
 ```sh
-$ git clone https://github.com/devmanorg/star-burger.git
+$ git clone https://github.com/Alex-Men-VL/star-burger-docker.git
 ```
 
 Перейдите в каталог проекта:

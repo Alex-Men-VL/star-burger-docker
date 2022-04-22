@@ -1,5 +1,6 @@
 bundles/**
 node_modules/
+./frontend/node_modules
 media/
 staticfiles/
 
@@ -143,3 +144,7 @@ dmypy.json
 cython_debug/
 
 .parcel-cache/
+./frontend/.parcel-cache
+frontend/bundles/
+
+production/.env.prod

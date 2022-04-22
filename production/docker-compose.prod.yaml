@@ -11,6 +11,8 @@ services:
       - 8000
     env_file:
       - production/.env.prod
+    depends_on:
+      - db
   nginx:
     build: ./production/nginx
     ports:
@@ -21,11 +23,12 @@ services:
     depends_on:
       - web
   db:
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data/
     env_file:
       - production/.env.prod
 
 volumes:
   static_volume:
-  postgres_data:
+  postgres_prod_data:
   media_volume:
-  nginx_conf:

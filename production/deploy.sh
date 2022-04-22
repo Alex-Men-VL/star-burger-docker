@@ -1,5 +1,6 @@
 #!/bin/bash
 
+docker rm -f star-burger-nginx  # To avoid the while removing network error
 docker-compose down
 docker-compose -f ../docker-compose.yaml -f docker-compose.prod.yaml up -d --build
 docker-compose -f ../docker-compose.yaml -f docker-compose.prod.yaml exec web python manage.py migrate

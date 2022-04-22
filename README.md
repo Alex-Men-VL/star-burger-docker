@@ -21,19 +21,19 @@
 
 Скачайте код:
 ```sh
-git clone https://github.com/devmanorg/star-burger.git
+$ git clone https://github.com/devmanorg/star-burger.git
 ```
 
 Перейдите в каталог проекта:
 ```sh
-cd star-burger
+$ cd star-burger-docker
 ```
 
 [Установите Python](https://www.python.org/), если этого ещё не сделали.
 
 Проверьте, что `python` установлен и корректно настроен. Запустите его в командной строке:
 ```sh
-python --version
+$ python --version
 ```
 **Важно!** Версия Python должна быть не ниже 3.6.
 
@@ -41,28 +41,32 @@ python --version
 
 В каталоге проекта создайте виртуальное окружение:
 ```sh
-python -m venv venv
+$ python -m venv venv
 ```
 Активируйте его. На разных операционных системах это делается разными командами:
 - Windows: `.\venv\Scripts\activate`
 - MacOS/Linux: `source venv/bin/activate`
 
+Перейдите в каталог `backend`:
+```shell
+$ cd backend
+```
 
 Установите зависимости в виртуальное окружение:
 ```sh
-pip install -r requirements.txt
+$ pip install -r requirements.txt
 ```
 
 Создайте файл базы данных SQLite и отмигрируйте её следующей командой:
 
 ```sh
-python manage.py migrate
+$ python manage.py migrate
 ```
 
 Запустите сервер:
 
 ```sh
-python manage.py runserver
+$ python manage.py runserver
 ```
 
 Откройте сайт в браузере по адресу [http://127.0.0.1:8000/](http://127.0.0.1:8000/). Если вы увидели пустую белую страницу, то не пугайтесь, выдохните. Просто фронтенд пока ещё не собран. Переходите к следующему разделу README.
@@ -76,41 +80,45 @@ python manage.py runserver
 Проверьте, что Node.js и его пакетный менеджер корректно установлены. Если всё исправно, то терминал выведет их версии:
 
 ```sh
-nodejs --version
+$ nodejs --version
 # v12.18.2
 # Если ошибка, попробуйте node:
-node --version
+$ node --version
 # v12.18.2
 
-npm --version
+$ npm --version
 # 6.14.5
 ```
 
 Версия `nodejs` должна быть не младше 10.0. Версия `npm` не важна. Как обновить Node.js читайте в статье: [How to Update Node.js](https://phoenixnap.com/kb/update-node-js-version).
 
+Перейдите в каталог `frontend`:
+```shell
+$ cd frontend
+```
+
 Установите необходимые пакеты. В каталоге проекта запустите:
 
 ```sh
-npm install --dev
+$ npm ci --dev
 ```
 
-Установите [Parcel](https://parceljs.org/). Это упаковщик веб-приложений. Он похож на [Webpack](https://webpack.js.org/), но совсем не требует настроек:
+Команда `npm ci` создаст каталог `node_modules` и установит туда пакеты Node.js. Получится аналог виртуального окружения 
+как для Python, но для Node.js.
+
+Помимо прочего будет установлен [Parcel](https://parceljs.org/) — это упаковщик веб-приложений, похожий на [Webpack](https://webpack.js.org/). В отличии от Webpack 
+он прост в использовании и совсем не требует настроек.
+
+Теперь запустите сборку фронтенда и не выключайте. Parcel будет работать в фоне и следить за изменениями в JS-коде:
 
 ```sh
-npm install -g parcel@latest  # понадобятся права администратора `sudo`
+$ ./node_modules/.bin/parcel watch bundles-src/index.js --dist-dir ../backend/bundles --public-url="./"
 ```
 
-Вам нужна вторая версия Parcel. Проверьте, что `parcel` установлен и его версию в командной строке:
+Если вы на Windows, то вам нужна та же команда, только с другими слешами в путях:
 
 ```sh
-$ parcel --version
-2.0.0-beta.2
-```
-
-Почти всё готово. Теперь запустите сборку фронтенда и не выключайте. Parcel будет работать в фоне и следить за изменениями в JS-коде:
-
-```sh
-parcel watch bundles-src/index.js --dist-dir bundles --public-url="./"
+$ .\node_modules\.bin\parcel watch bundles-src/index.js --dist-dir ..\backend\bundles --public-url="./"
 ```
 
 Дождитесь завершения первичной сборки. Это вполне может занять 10 и более секунд. О готовности вы узнаете по сообщению в консоли:
@@ -125,45 +133,63 @@ Parcel будет следить за файлами в каталоге `bundle
 
 ![](https://dvmn.org/filer/canonical/1594651900/687/)
 
-Каталог `bundles` в репозитории особенный — туда Parcel складывает результаты своей работы. Эта директория предназначена исключительно для результатов сборки фронтенда и потому исключёна из репозитория с помощью `.gitignore`.
+Каталог `backend/bundles` в репозитории особенный — туда Parcel складывает результаты своей работы. Эта директория 
+предназначена исключительно для результатов сборки фронтенда и потому исключёна из репозитория с помощью `.gitignore`.
 
 **Сбросьте кэш браузера <kbd>Ctrl-F5</kbd>.** Браузер при любой возможности старается кэшировать файлы статики: CSS, картинки и js-код. Порой это приводит к странному поведению сайта, когда код уже давно изменился, но браузер этого не замечает и продолжает использовать старую закэшированную версию. В норме Parcel решает эту проблему самостоятельно. Он следит за пересборкой фронтенда и предупреждает JS-код в браузере о необходимости подтянуть свежий код. Но если вдруг что-то у вас идёт не так, то начните ремонт со сброса браузерного кэша, жмите <kbd>Ctrl-F5</kbd>.
 
+## Запуск через Docker
 
-## Как запустить prod-версию сайта
+Убедитесь, что у вас установлен [Docker](https://www.docker.com/).
 
-Собрать фронтенд:
+### Запуск dev-версии сайта
 
-```sh
-parcel build bundles-src/index.js --dist-dir bundles --public-url="./"
+Скачайте код:
+```shell
+$ git clone https://github.com/devmanorg/star-burger.git
 ```
 
-Настроить бэкенд: создать файл `.env` в каталоге `star_burger/` со следующими настройками:
+Перейдите в каталог проекта:
+```shell
+$ cd star-burger-docker
+```
 
-- `DEBUG` — дебаг-режим. Поставьте `False`.
-- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
-- `ALLOWED_HOSTS` — [см. документацию Django](https://docs.djangoproject.com/en/3.1/ref/settings/#allowed-hosts)
-- `YANDEX_API_KEY` — API ключ Яндекс-геокодера. [Как получить](https://developer.tech.yandex.ru/services/).
-- `ROLLBAR_TOKEN` - токен от [Rollbar](https://rollbar.com).
-- `ROLLBAR_ENVIRONMENT` - окружение, в котором запускается сервер. По умолчанию - `development`.
+Создайте файл `.env` с переменными окружения. Добавьте следующие переменные в формате
+`ПЕРЕМЕННАЯ=значение`:
+
+- `DEBUG` - дебаг-режим. По умолчанию - `True`;
+- `SECRET_KEY` — секретный ключ проекта. Он отвечает за шифрование на сайте. Например, им зашифрованы все пароли на 
+  вашем сайте. Не стоит использовать значение по-умолчанию, **замените на своё**.
+- `YANDEX_API_KEY` - API ключ Яндекс-геокодера. [Как получить](https://developer.tech.yandex.ru/services/);
+- `ROLLBAR_TOKEN` - токен от [Rollbar](https://rollbar.com);
+- `ROLLBAR_ENVIRONMENT` - окружение, в котором запускается сервер. По умолчанию - `development`;
 - `DATABASE_URL` - URl используемой бд. [Шаблоны URL](https://github.com/jacobian/dj-database-url#:~:text=unlimited%20persistent%20connections.-,URL%20schema,-Engine). По умолчанию используется бд `SQLite`.
 
+Все настройки являются не обязательными. Кроме `DATABASE_URL`, значение которого должно быть 
+`postgres://postgres:postgres@db:5432/star_burger` - url базы, запущенной в контейнере. Если вы хотите использовать 
+какую-то другую бд, то укажите ее url.
 
-## Инструкция по деплою
-
-- `Домен сайта` — alexmenshikov.xyz
-- `IP` — 5.53.125.150
-- `Имя пользователя` — alex
-- `Место нахождения деплойного скрипта` — /home/alex
-
-### Запуск деплойного скрипта
-
-```sh
-$ cd /home/alex
-$ ./deploy_star_burger.sh
+Запустите docker-compose:
+```shell
+$ docker-compose up -d --build
 ```
 
-Запись о деплое автоматически появится на Rollbar
+Накатите миграции:
+```shell
+$ docker-compose exec web  python manage.py migrate
+```
+
+Создайте суперпользователя:
+```shell
+$ docker-compose exec web  python manage.py createsuperuser
+```
+
+Откройте сайт в браузере по адресу [http://127.0.0.1:8080/](http://127.0.0.1:8080/). Порт `8080` - обязателен.
+Если отображается пустая страница, то перезагрузите страницу.
+
+### Запуск production-версии сайта.
+
+Смотри [инструкцию](production/README.md) в папке `production`.
 
 ## Цели проекта
 
